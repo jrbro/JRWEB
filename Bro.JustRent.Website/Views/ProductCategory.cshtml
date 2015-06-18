@@ -1,0 +1,42 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    Layout = "Master.cshtml";
+}
+
+@using Our.Umbraco.Vorto
+@using Our.Umbraco.Vorto.Extensions
+
+<div role="content">
+	<section class="light blogarchive equalizer">
+		<div class="container">
+			<div class="row">
+				@Umbraco.Field("productCategoryName")<br/>
+				@foreach(var category in CurrentPage.Children) 
+				{
+					IPublishedContent ipcCategory = (IPublishedContent) category;
+					var categoryName = ipcCategory.GetVortoValue("productCategoryName");
+					
+					string categoryPageUrl = category.Url;
+					if (!string.IsNullOrEmpty(category.umbracoUrlAlias))
+					{
+						var array = category.umbracoUrlAlias.Split(new Char [] {','}, StringSplitOptions.RemoveEmptyEntries);
+						categoryPageUrl = array[0];
+					}
+					
+					<div class="col-sm-6">
+						<div class="content equal">
+							<a href="@categoryPageUrl">@categoryName</a>
+							
+							<br/>	
+					
+							@if(@category.HasValue("productCategoryLogo"))
+							{
+								<img src='@Umbraco.Media(@category.productCategoryLogo).Url' alt='@categoryName' />
+							}
+							<br/>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</section>

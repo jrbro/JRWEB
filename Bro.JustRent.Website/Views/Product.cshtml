@@ -1,0 +1,18 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    Layout = "Master.cshtml";
+}
+<div role="content">
+	@Umbraco.Field("productName")
+	<br/>
+	@Umbraco.Field("productDescription")
+	<br/>
+	@if (CurrentPage.HasValue("productImage"))
+	{
+		<img src='@CurrentPage.GetCropUrl("productImage", "200x200")' />
+		<!--<img src="@CurrentPage.productImage.src" alt="@CurrentPage.productName" />-->
+	}
+	@Umbraco.GetDictionaryValue("ProductPrice")
+	Город: @Umbraco.Field("productLocationCity")	
+	
+</div>
