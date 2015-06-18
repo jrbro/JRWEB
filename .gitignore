@@ -72,3 +72,6 @@ Release/
 *Newtonsoft.Json.xml
 *Backup*/
 [Pp]ackages/
+App_Data/
+theConnectionStrings.config
+*Bro.JustRent.Website/Media/
