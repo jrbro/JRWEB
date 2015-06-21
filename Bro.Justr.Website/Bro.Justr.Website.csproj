@@ -223,15 +223,6 @@
     <Content Include="js\jquery.min.js" />
     <Content Include="packages.config" />
     <Content Include="Scripts\fanoe.js" />
-    <Content Include="Views\Web.config" />
-    <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Macro.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Embed.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
-    <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
-    <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Config\UrlRewriting.config" />
     <Content Include="Config\umbracoSettings.config" />
     <Content Include="Config\trees.config" />
@@ -391,12 +382,31 @@
     <Content Include="App_Plugins\Grid\Editors\Render\media_wide.cshtml" />
     <Content Include="App_Plugins\Grid\Editors\Render\quote_with_description.cshtml" />
     <Content Include="Config\theConnectionStrings.config" />
+    <Content Include="Views\BlogOverview.cshtml" />
+    <Content Include="Views\BlogPost.cshtml" />
+    <Content Include="Views\Home.cshtml" />
+    <Content Include="Views\Master.cshtml" />
+    <Content Include="Views\Partials\BottomNavigation.cshtml" />
+    <Content Include="Views\Partials\Grid\Fanoe.cshtml" />
+    <Content Include="Views\Partials\MainNavigation.cshtml" />
+    <Content Include="Views\Product.cshtml" />
+    <Content Include="Views\ProductCategory.cshtml" />
+    <Content Include="Views\TextPage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Embed.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Macro.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
+    <Content Include="Views\Web.config" />
     <Content Include="Xslt\Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -2888,7 +2898,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />
+    <Folder Include="masterpages\" />
     <Folder Include="usercontrols\" />
+    <Folder Include="Views\MacroPartials\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

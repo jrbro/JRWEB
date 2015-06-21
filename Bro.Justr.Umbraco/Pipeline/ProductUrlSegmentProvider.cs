@@ -5,16 +5,16 @@ using Umbraco.Core.Strings;
 namespace Bro.Justr.Umbraco.Pipeline
 {
     /// <summary>
-    /// Umbraco segment provider for Product pages (Document Type "Product")
+    /// URL segment provider for Product pages (Document Type "Product")
     /// </summary>
-    public class ProductSegmentProvider : IUrlSegmentProvider
+    public class ProductUrlSegmentProvider : IUrlSegmentProvider
     {
-        private readonly IUrlSegmentProvider _provider = new DefaultUrlSegmentProvider();
-        private const int PRODUCT_DOCUMENT_TYPE_ID = 2113;
+        private readonly IUrlSegmentProvider _provider = new BaseUrlSegmentProvider();
+        //private readonly IUrlSegmentProvider _provider = new DefaultUrlSegmentProvider();
 
         public string GetUrlSegment(IContentBase content, CultureInfo culture)
         {
-            if (content.ContentTypeId != PRODUCT_DOCUMENT_TYPE_ID) return null;
+            if (content.ContentTypeId != Settings.Justr.ProductDocumentTypeID) return null;
 
             var segment = culture != null ? _provider.GetUrlSegment(content, culture) : _provider.GetUrlSegment(content);
 

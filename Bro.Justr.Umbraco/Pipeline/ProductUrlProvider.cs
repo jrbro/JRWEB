@@ -14,9 +14,16 @@ namespace Bro.Justr.Umbraco.Pipeline
     /// </summary>
     public class ProductUrlProvider : IUrlProvider
     {
+        private readonly IUrlProvider _urlProvider = new DefaultUrlProvider();
+
         public IEnumerable<string> GetOtherUrls(UmbracoContext umbracoContext, int id, Uri current)
         {
-            return Enumerable.Empty<string>();
+            var content = umbracoContext.ContentCache.GetById(id);
+            if (content != null && content.DocumentTypeAlias == "Product" && content.Parent != null)
+            {
+                //return Enumerable.Empty<string>();
+            }
+            return _urlProvider.GetOtherUrls(umbracoContext, id, current);
         }
 
         public string GetUrl(UmbracoContext umbracoContext, int id, Uri current, UrlProviderMode mode)
