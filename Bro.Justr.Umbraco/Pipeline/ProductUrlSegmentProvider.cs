@@ -10,7 +10,6 @@ namespace Bro.Justr.Umbraco.Pipeline
     public class ProductUrlSegmentProvider : IUrlSegmentProvider
     {
         private readonly IUrlSegmentProvider _provider = new BaseUrlSegmentProvider();
-        //private readonly IUrlSegmentProvider _provider = new DefaultUrlSegmentProvider();
 
         public string GetUrlSegment(IContentBase content, CultureInfo culture)
         {

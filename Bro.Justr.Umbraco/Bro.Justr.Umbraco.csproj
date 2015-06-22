@@ -221,6 +221,7 @@
     <Compile Include="AppEvents.cs" />
     <Compile Include="Extensions\ContentExtensions.cs" />
     <Compile Include="Models\VortoValue.cs" />
+    <Compile Include="Pipeline\BaseUrlProvider.cs" />
     <Compile Include="Pipeline\BaseUrlSegmentProvider.cs" />
     <Compile Include="Pipeline\ProductUrlProvider.cs" />
     <Compile Include="Pipeline\ProductUrlSegmentProvider.cs" />

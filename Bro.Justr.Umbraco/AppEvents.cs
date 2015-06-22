@@ -9,6 +9,8 @@ using Umbraco.Web.Routing;
 using System.Linq;
 using Bro.Justr.Umbraco.Extensions;
 using System.Globalization;
+using Umbraco.Web;
+using System;
 
 namespace Bro.Justr.Umbraco
 {
@@ -16,8 +18,11 @@ namespace Bro.Justr.Umbraco
     {
         protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
+            LogHelper.Info(this.GetType(), "JR: Registering BaseUrlProvider");
+            UrlProviderResolver.Current.InsertTypeBefore<DefaultUrlProvider, BaseUrlProvider>();
+
             LogHelper.Info(this.GetType(), "JR: Registering ProductUrlProvider");
-            UrlProviderResolver.Current.InsertTypeBefore<DefaultUrlProvider, ProductUrlProvider>();
+            UrlProviderResolver.Current.InsertTypeBefore<BaseUrlProvider, ProductUrlProvider>();
 
             LogHelper.Info(this.GetType(), "JR: Registering BaseUrlSegmentProvider");
             UrlSegmentProviderResolver.Current.InsertTypeBefore<DefaultUrlSegmentProvider, BaseUrlSegmentProvider>();
@@ -34,16 +39,8 @@ namespace Bro.Justr.Umbraco
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             ContentService.Publishing += ContentService_Publishing;
-            //ContentService.Saving += ContentService_Saving;
-
-           
 
             base.ApplicationStarted(umbracoApplication, applicationContext);
-        }
-
-        void ContentService_Saving(IContentService sender, global::Umbraco.Core.Events.SaveEventArgs<IContent> e)
-        {
-            
         }
 
         void ContentService_Publishing(global::Umbraco.Core.Publishing.IPublishingStrategy sender, global::Umbraco.Core.Events.PublishEventArgs<IContent> e)
@@ -56,17 +53,12 @@ namespace Bro.Justr.Umbraco
                     var originalAliases = originalAlias.Split(new char[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim()).ToList();
 
                     CultureInfo russianCulture = new CultureInfo("ru-RU");
-                    string russianUrlSegment = ((IContentBase)content).GetUrlSegment(russianCulture);
 
-                    if (!string.IsNullOrWhiteSpace(russianUrlSegment))
+                    string russianVersionPageUrl = content.GetUrl(russianCulture);
+
+                    if (!originalAliases.Contains(russianVersionPageUrl))
                     {
-                        #warning TODO generate page URL for russian version of the site
-                        string russianVersionPageUrl = ("/ru/" + russianUrlSegment).Trim().ToLower().TrimEnd("/");
-
-                        if (!originalAliases.Contains(russianVersionPageUrl))
-                        {
-                            originalAliases.Insert(0, russianVersionPageUrl); //should be the first item in the list
-                        }
+                        originalAliases.Insert(0, russianVersionPageUrl); //should be the first item in the list
 
                         content.SetValue(Settings.Umbraco.UmracoUrlAliasProperty, string.Join(",", originalAliases.ToArray()));
                     }

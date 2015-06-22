@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbraco.Core.Models;
 using Umbraco.Core.Strings;
+using Umbraco.Web;
 using Umbraco.Web.Routing;
 
 namespace Bro.Justr.Umbraco.Extensions
@@ -29,13 +30,24 @@ namespace Bro.Justr.Umbraco.Extensions
         }
 
 
-        public static string GetUrl(this IContent content)
+        public static string GetUrl(this IContent content, CultureInfo culture)
         {
-            /*var url = UrlProviders.Select(p => p.GetUrl(content, culture)).First(u => u != null);
-            url = url ?? new DefaultUrlProvider().GetUrlSegment(content, culture); // be safe
-            return url;*/
+            //string url = UrlProviders.Select(p => p.GetOtherUrls(UmbracoContext.Current, content.Id, new Uri(""))).First(u => u.StartsWith("/" + culture.TwoLetterISOLanguageName));
+            var url = string.Empty;
+            foreach(var urlProvider in UrlProviders)
+            {
+                var urls = urlProvider.GetOtherUrls(UmbracoContext.Current, content.Id, new Uri("http://umbraco.placard.kiev.ua/ru"));
+                
+                url = urls.FirstOrDefault(u => u.StartsWith("/" + culture.TwoLetterISOLanguageName));
+                
+                if (!string.IsNullOrWhiteSpace(url))
+                    break;
+            }
+            
+            /*url = url ?? new DefaultUrlProvider().GetUrlSegment(content, culture); // be safe*/
+            return url;
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         /*public static string UrlName(this IContent content)
@@ -85,6 +97,17 @@ namespace Bro.Justr.Umbraco.Extensions
             var url = UrlSegmentProviders.Select(p => p.GetUrlSegment(content, culture)).First(u => u != null);
             url = url ?? new DefaultUrlSegmentProvider().GetUrlSegment(content, culture); // be safe
             return url;
+        }
+
+        /// <summary>
+        /// Gets the url segment for a specified content and culture.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <param name="culture">The culture.</param>
+        /// <returns>The url segment.</returns>
+        public static string GetUrlSegment(this IContent content, CultureInfo culture)
+        {
+            return GetUrlSegment((IContentBase)content, culture);
         }
     }
 }

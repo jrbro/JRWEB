@@ -75,7 +75,7 @@ namespace Bro.Justr.Umbraco.Pipeline
 
         private string GetLanguageTwoSymbolCode(PublishedContentRequest publishedContentRequest)
         {
-            if (publishedContentRequest.Culture != null && publishedContentRequest.Culture.Name == "ru-RU")
+            if (publishedContentRequest != null && publishedContentRequest.Culture != null && publishedContentRequest.Culture.Name == "ru-RU")
             {
                 return "ru";
             }

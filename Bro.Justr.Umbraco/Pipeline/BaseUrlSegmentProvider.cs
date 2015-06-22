@@ -57,7 +57,7 @@ namespace Bro.Justr.Umbraco.Pipeline
                 content.HasProperty(Settings.Justr.PageUrlSegmentProperty))
             {
                 var vortoValueString = content.GetValue<string>(Settings.Justr.PageUrlSegmentProperty);
-                var vortoValue = JsonConvert.DeserializeObject<VortoValue>(vortoValueString);
+                var vortoValue = vortoValueString != null ? JsonConvert.DeserializeObject<VortoValue>(vortoValueString) : null;
                 if (vortoValue != null && vortoValue.Values.Any())
                 {
                     culture = culture ?? Settings.Justr.DefaultCulture;

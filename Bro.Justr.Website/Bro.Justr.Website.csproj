@@ -2893,7 +2893,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Bro.Justr.Umbraco\Bro.Justr.Umbraco.csproj">
       <Project>{cc3ae06a-12c3-4d20-9b2e-4cfd9527143f}</Project>
-      <Name>Bro.JustRent.Umbraco</Name>
+      <Name>Bro.Justr.Umbraco</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
