@@ -45,6 +45,11 @@ namespace Bro.Justr.Umbraco
             /// </summary>
             public static CultureInfo DefaultCulture = new CultureInfo("uk-UA");
 
+            /// <summary>
+            /// Second (alternate) culture of the site
+            /// </summary>
+            public static CultureInfo SecondCulture = new CultureInfo("ru-RU");
+
         }
 
         

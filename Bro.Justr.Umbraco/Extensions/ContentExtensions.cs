@@ -32,29 +32,23 @@ namespace Bro.Justr.Umbraco.Extensions
 
         public static string GetUrl(this IContent content, CultureInfo culture)
         {
-            //string url = UrlProviders.Select(p => p.GetOtherUrls(UmbracoContext.Current, content.Id, new Uri(""))).First(u => u.StartsWith("/" + culture.TwoLetterISOLanguageName));
-            var url = string.Empty;
-            foreach(var urlProvider in UrlProviders)
+            if (content.Id > 0)
             {
-                var urls = urlProvider.GetOtherUrls(UmbracoContext.Current, content.Id, new Uri("http://umbraco.placard.kiev.ua/ru"));
-                
-                url = urls.FirstOrDefault(u => u.StartsWith("/" + culture.TwoLetterISOLanguageName));
-                
-                if (!string.IsNullOrWhiteSpace(url))
-                    break;
+                foreach (var urlProvider in UrlProviders)
+                {
+                    #warning TODO: set proper Uri for currentURi param
+                    var urls = urlProvider.GetOtherUrls(UmbracoContext.Current, content.Id, new Uri("http://umbraco.placard.kiev.ua/ru"));
+
+                    string url = urls.FirstOrDefault(u => u.StartsWith("/" + culture.TwoLetterISOLanguageName)); //get first url which starts with /ru 
+
+                    if (!string.IsNullOrWhiteSpace(url))
+                        return url; //return first not empty url
+                }
             }
             
-            /*url = url ?? new DefaultUrlProvider().GetUrlSegment(content, culture); // be safe*/
-            return url;
-
-            //throw new NotImplementedException();
+            return string.Empty;
         }
 
-        /*public static string UrlName(this IContent content)
-        {
-            //((IContentBase)content).get
-            return new DefaultUrlSegmentProvider().GetUrlSegment(content).ToLower();
-        }*/
 
         /********************************************** COPY PASTED FROM Umbraco.Core.Strings.ContentBaseExtensions ************************************************/
 

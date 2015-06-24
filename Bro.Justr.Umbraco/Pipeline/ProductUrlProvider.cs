@@ -14,20 +14,18 @@ namespace Bro.Justr.Umbraco.Pipeline
     /// </summary>
     public class ProductUrlProvider : IUrlProvider
     {
-        private readonly IUrlProvider _urlProvider = new DefaultUrlProvider();
+        private readonly IUrlProvider _urlProvider = new BaseUrlProvider();
 
         public IEnumerable<string> GetOtherUrls(UmbracoContext umbracoContext, int id, Uri current)
         {
-            var content = umbracoContext.ContentCache.GetById(id);
-            if (content != null && content.DocumentTypeAlias == "Product" && content.Parent != null)
-            {
-                //return Enumerable.Empty<string>();
-            }
-            return _urlProvider.GetOtherUrls(umbracoContext, id, current);
+            //return _urlProvider.GetOtherUrls(umbracoContext, id, current);
+            return Enumerable.Empty<string>();
         }
 
         public string GetUrl(UmbracoContext umbracoContext, int id, Uri current, UrlProviderMode mode)
         {
+            #warning TODO implement chaching of url if the performance is low
+
             var content = umbracoContext.ContentCache.GetById(id);
             if (content != null && content.DocumentTypeAlias == "Product" && content.Parent != null)
             {
@@ -45,18 +43,15 @@ namespace Bro.Justr.Umbraco.Pipeline
                     }
                 }*/
 
-                //TODO implement chaching of url if the performance is low
-
                 string languageCode = GetLanguageTwoSymbolCode(umbracoContext.PublishedContentRequest);
                 
-                string rootNode = languageCode == "ru" ? "прокат-аренда" : "прокат-oренда";
+                string rootNode = languageCode == Settings.Justr.SecondCulture.TwoLetterISOLanguageName ? "прокат-аренда" : "прокат-oренда";
                 
                 string relativeUrl = "/" + string.Join("/", new string[] { languageCode, rootNode, content.UrlName} ) + "/";
 
-                Uri absoluteUri = new Uri(relativeUrl, UriKind.Relative).MakeAbsoluteUri(umbracoContext.HttpContext);
-
                 if (mode == UrlProviderMode.Absolute)
                 {
+                    Uri absoluteUri = new Uri(relativeUrl, UriKind.Relative).MakeAbsoluteUri(umbracoContext.HttpContext);
                     return absoluteUri.AbsoluteUri;
                 }
 
@@ -75,9 +70,9 @@ namespace Bro.Justr.Umbraco.Pipeline
 
         private string GetLanguageTwoSymbolCode(PublishedContentRequest publishedContentRequest)
         {
-            if (publishedContentRequest != null && publishedContentRequest.Culture != null && publishedContentRequest.Culture.Name == "ru-RU")
+            if (publishedContentRequest != null && publishedContentRequest.Culture != null && publishedContentRequest.Culture.Name == Settings.Justr.SecondCulture.Name)
             {
-                return "ru";
+                return Settings.Justr.SecondCulture.TwoLetterISOLanguageName;
             }
             return "ua";
         }

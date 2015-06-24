@@ -52,11 +52,10 @@ namespace Bro.Justr.Umbraco
                     string originalAlias = (string)content.GetValue(Settings.Umbraco.UmracoUrlAliasProperty) ?? string.Empty;
                     var originalAliases = originalAlias.Split(new char[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim()).ToList();
 
-                    CultureInfo russianCulture = new CultureInfo("ru-RU");
+                    string russianVersionPageUrl = content.GetUrl(Settings.Justr.SecondCulture);
 
-                    string russianVersionPageUrl = content.GetUrl(russianCulture);
-
-                    if (!originalAliases.Contains(russianVersionPageUrl))
+                    if (!string.IsNullOrWhiteSpace(russianVersionPageUrl) &&
+                        !originalAliases.Contains(russianVersionPageUrl))
                     {
                         originalAliases.Insert(0, russianVersionPageUrl); //should be the first item in the list
 
