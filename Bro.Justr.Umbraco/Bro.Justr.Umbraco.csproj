@@ -220,6 +220,7 @@
   <ItemGroup>
     <Compile Include="AppEvents.cs" />
     <Compile Include="Extensions\ContentExtensions.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Models\VortoValue.cs" />
     <Compile Include="Pipeline\BaseUrlProvider.cs" />
     <Compile Include="Pipeline\BaseUrlSegmentProvider.cs" />

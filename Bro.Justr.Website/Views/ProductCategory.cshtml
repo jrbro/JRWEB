@@ -4,18 +4,23 @@
 }
 
 @using Our.Umbraco.Vorto.Extensions
+@using Bro.Justr.Umbraco.Extensions
+@using System.Globalization
+
+@{
+    var currentCategoryName = ((IPublishedContent)CurrentPage).GetVortoValue("productCategoryName");
+    if (currentCategoryName == null)
+    {
+        currentCategoryName = CurrentPage.Name;
+    }
+
+    CultureInfo currentCulture = new CultureInfo(this.Culture);
+}
 
 <div role="content">
 	<section class="light blogarchive equalizer">
 		<div class="container">
 			<div class="row">
-				@{
-                    var currentCategoryName = ((IPublishedContent)CurrentPage).GetVortoValue("productCategoryName");
-                    if (currentCategoryName == null)
-                    {
-                        currentCategoryName = CurrentPage.Name;
-                    }
-                }
 
                 @currentCategoryName
 
@@ -25,8 +30,8 @@
 				{
 					IPublishedContent ipcCategory = (IPublishedContent) category;
 					var categoryName = ipcCategory.GetVortoValue("productCategoryName");
-					
-					string categoryPageUrl = category.Url;
+
+                    string categoryPageUrl = ipcCategory.GetUrl(currentCulture);
 					
 					<div class="col-sm-6">
 						<div class="content equal">

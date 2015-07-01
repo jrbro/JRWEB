@@ -34,18 +34,45 @@ namespace Bro.Justr.Umbraco.Extensions
         {
             if (content.Id > 0)
             {
-                foreach (var urlProvider in UrlProviders)
+                return GetLocalizedUrlFromOtherUrls(content.Id, culture);
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Gets localized relative URL for the content (used in templates to build links)
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="culture"></param>
+        /// <returns>localized relative URL</returns>
+        public static string GetUrl(this IPublishedContent content, CultureInfo culture)
+        {
+            if (content.Id > 0)
+            {
+                if (culture.Equals(Settings.Justr.DefaultCulture))
                 {
-                    #warning TODO: set proper Uri for currentURi param
-                    var urls = urlProvider.GetOtherUrls(UmbracoContext.Current, content.Id, new Uri("http://umbraco.placard.kiev.ua/ru"));
-
-                    string url = urls.FirstOrDefault(u => u.StartsWith("/" + culture.TwoLetterISOLanguageName)); //get first url which starts with /ru 
-
-                    if (!string.IsNullOrWhiteSpace(url))
-                        return url; //return first not empty url
+                    return content.Url;
+                }
+                else
+                {
+                    return GetLocalizedUrlFromOtherUrls(content.Id, culture);
                 }
             }
-            
+            return string.Empty;
+        }
+
+        private static string GetLocalizedUrlFromOtherUrls(int contentId, CultureInfo culture)
+        {
+            string lang = culture.GetTwoLetterLangCode();
+            foreach (var urlProvider in UrlProviders)
+            {
+                var urls = urlProvider.GetOtherUrls(UmbracoContext.Current, contentId, UmbracoContext.Current.HttpContext.Request.Url);
+
+                string url = urls != null ? urls.FirstOrDefault(u => u.StartsWith("/" + lang)) : null; //get first url which starts with /lang
+
+                if (!string.IsNullOrWhiteSpace(url))
+                    return url; //return first not empty url
+            }
             return string.Empty;
         }
 
