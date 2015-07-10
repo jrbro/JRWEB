@@ -6,6 +6,8 @@ using ClientDependency.Core;
 using Umbraco.Core;
 using Umbraco.Web;
 using Umbraco.Web.Routing;
+using Bro.Justr.Umbraco.Extensions;
+using Umbraco.Core.Models;
 
 namespace Bro.Justr.Umbraco.Pipeline
 {
@@ -14,15 +16,30 @@ namespace Bro.Justr.Umbraco.Pipeline
     /// </summary>
     public class ProductUrlProvider : IUrlProvider
     {
-        private readonly IUrlProvider _urlProvider = new BaseUrlProvider();
+        //private readonly IUrlProvider _urlProvider = new BaseUrlProvider();
 
         public IEnumerable<string> GetOtherUrls(UmbracoContext umbracoContext, int id, Uri current)
         {
             //return _urlProvider.GetOtherUrls(umbracoContext, id, current);
+
+            var content = umbracoContext.ContentCache.GetById(id);
+            if (content != null && content.DocumentTypeAlias == "Product" && content.Parent != null)
+            {
+                 return new List<string>()
+                 {
+                     GetUrl(umbracoContext, id, current, UrlProviderMode.Relative, Settings.Justr.SecondCulture.TwoLetterISOLanguageName)
+                 };
+            }
             return Enumerable.Empty<string>();
         }
 
         public string GetUrl(UmbracoContext umbracoContext, int id, Uri current, UrlProviderMode mode)
+        {
+            return GetUrl(umbracoContext, id, current, mode,
+                GetLanguageTwoSymbolCode(umbracoContext.PublishedContentRequest));
+        }
+
+        public string GetUrl(UmbracoContext umbracoContext, int id, Uri current, UrlProviderMode mode, string languageCode)
         {
             #warning TODO implement chaching of url if the performance is low
 
@@ -43,11 +60,19 @@ namespace Bro.Justr.Umbraco.Pipeline
                     }
                 }*/
 
-                string languageCode = GetLanguageTwoSymbolCode(umbracoContext.PublishedContentRequest);
+                //string languageCode = GetLanguageTwoSymbolCode(umbracoContext.PublishedContentRequest);
                 
                 string rootNode = languageCode == Settings.Justr.SecondCulture.TwoLetterISOLanguageName ? "прокат-аренда" : "прокат-oренда";
-                
-                string relativeUrl = "/" + string.Join("/", new string[] { languageCode, rootNode, content.UrlName} ) + "/";
+
+                string urlSegment = content.UrlName;
+                if (languageCode == Settings.Justr.SecondCulture.TwoLetterISOLanguageName)
+                {
+                    #warning TODO optimize that - use cache!
+                    var dbContent = umbracoContext.Application.Services.ContentService.GetById(id);
+                    urlSegment = dbContent.GetUrlSegment(Settings.Justr.SecondCulture) ?? content.UrlName; //be safe
+                }
+
+                string relativeUrl = "/" + string.Join("/", new string[] { languageCode, rootNode, urlSegment }) + "/";
 
                 if (mode == UrlProviderMode.Absolute)
                 {
