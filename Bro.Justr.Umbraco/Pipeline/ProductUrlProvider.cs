@@ -61,8 +61,8 @@ namespace Bro.Justr.Umbraco.Pipeline
                 }*/
 
                 //string languageCode = GetLanguageTwoSymbolCode(umbracoContext.PublishedContentRequest);
-                
-                string rootNode = languageCode == Settings.Justr.SecondCulture.TwoLetterISOLanguageName ? "прокат-аренда" : "прокат-oренда";
+
+                string rootNode = languageCode == Settings.Justr.SecondCulture.TwoLetterISOLanguageName ? "аренда-и-прокат" : "оренда-та-прокат";
 
                 string urlSegment = content.UrlName;
                 if (languageCode == Settings.Justr.SecondCulture.TwoLetterISOLanguageName)

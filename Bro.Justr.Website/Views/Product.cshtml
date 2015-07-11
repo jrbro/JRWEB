@@ -12,6 +12,7 @@
     {
         productName = CurrentPage.Name;
     }
+    var productDescription = ((IPublishedContent)CurrentPage).GetVortoValue("productDescription");
 
     CultureInfo currentCulture = new CultureInfo(this.Culture);
 }
@@ -19,13 +20,16 @@
 <div role="content">
 	@productName
 	<br/>
-	@Umbraco.Field("productDescription")
+	@Html.Raw(productDescription)
+
 	<br/>
 	@if (CurrentPage.HasValue("productImage"))
 	{
 		<img src='@CurrentPage.GetCropUrl("productImage", "200x200")' />
 		<!--<img src="@CurrentPage.productImage.src" alt="" />-->
 	}
-	@Umbraco.GetDictionaryValue("ProductPrice")
-	Город: @Umbraco.Field("productLocationCity")	
+    <br />
+    @Umbraco.GetDictionaryValue("ProductPrice")
+	<br/>
+    Город: @Umbraco.Field("productLocationCity")	
 </div>

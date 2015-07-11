@@ -13,7 +13,7 @@ namespace Bro.Justr.Umbraco.Pipeline
         public bool TryFindContent(PublishedContentRequest contentRequest)
         {
             var path = contentRequest.Uri.GetAbsolutePathDecoded();
-            if (!path.ToLower().Contains("/прокат-аренда/") && !path.ToLower().Contains("/прокат-oренда/"))
+            if (!path.ToLower().Contains("/аренда-и-прокат/") && !path.ToLower().Contains("/оренда-та-прокат/"))
                 return false; // not found
 
             Regex regexp = new Regex(@"-p(\d+)\/?$"); //example: /ru/прокат-аренда/Рюкзак-deuter-60-p2137/
