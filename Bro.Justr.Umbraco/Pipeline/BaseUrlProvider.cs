@@ -18,15 +18,25 @@ namespace Bro.Justr.Umbraco.Pipeline
         {
             if (id > 0)
             {
-                string russianUrl = BuildFullyLocalizedUrl(umbracoContext, id, Settings.Justr.SecondCulture); //generate url for secondary language 
+                string langCode = Settings.Justr.SecondCulture.GetTwoLetterLangCode();
+                string secondaryLanguagePageUrl = CacheHelper.GetPageUrl(id, langCode);
+                
+                if (string.IsNullOrWhiteSpace(secondaryLanguagePageUrl))
+                {
+                    secondaryLanguagePageUrl = BuildFullyLocalizedUrl(umbracoContext, id, Settings.Justr.SecondCulture); //generate url for secondary language 
+                    if (!string.IsNullOrWhiteSpace(secondaryLanguagePageUrl))
+                    {
+                        CacheHelper.SetPageUrl(id, langCode, secondaryLanguagePageUrl);
+                    }
+                }
 
                 //var otherUrls = _urlProvider.GetOtherUrls(umbracoContext, id, current).ToList();
                 //otherUrls.Insert(0, russianUrl); //insert secondary language url at the very beginning of the list
 
                 //return otherUrls.Distinct();
-                if (!string.IsNullOrWhiteSpace(russianUrl))
+                if (!string.IsNullOrWhiteSpace(secondaryLanguagePageUrl))
                 {
-                    return new List<string>() { russianUrl };
+                    return new List<string>() { secondaryLanguagePageUrl };
                 }
             }
             return Enumerable.Empty<string>();
@@ -37,6 +47,7 @@ namespace Bro.Justr.Umbraco.Pipeline
             return _urlProvider.GetUrl(umbracoContext, id, current, mode);
         }
 
+        #region Private methods
 
         private string BuildFullyLocalizedUrl(global::Umbraco.Web.UmbracoContext umbracoContext, int id, CultureInfo cultureInfo)
         {
@@ -45,7 +56,7 @@ namespace Bro.Justr.Umbraco.Pipeline
             {
                 IList<string> segments = new List<string>();
                 GetLocalizedUrlSegments(content, cultureInfo, segments);
-                return "/" + string.Join("/", segments.Reverse().ToArray()).ToLower();
+                return "/" + string.Join("/", segments.Reverse().ToArray()).ToLower() + "/";
             }
             return string.Empty;
         }
@@ -60,5 +71,7 @@ namespace Bro.Justr.Umbraco.Pipeline
                 GetLocalizedUrlSegments(parent, cultureInfo, segments); //recursively get segments of all parents
             }
         }
+
+        #endregion
     }
 }

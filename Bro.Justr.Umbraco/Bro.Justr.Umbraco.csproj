@@ -219,6 +219,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppEvents.cs" />
+    <Compile Include="CacheHelper.cs" />
     <Compile Include="Extensions\ContentExtensions.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Models\VortoValue.cs" />

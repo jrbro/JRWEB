@@ -50,6 +50,12 @@ namespace Bro.Justr.Umbraco
             /// </summary>
             public static CultureInfo SecondCulture = new CultureInfo("ru-RU");
 
+            public static class Cache
+            {
+                public static string PageRelativeUrlsCacheKey = "PageRelativeUrls";
+                public static string PageAbsoluteUrlsCacheKey = "PageAbsoluteUrls";
+            }
+
         }
 
         

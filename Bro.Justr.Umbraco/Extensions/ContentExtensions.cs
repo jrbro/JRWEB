@@ -55,7 +55,15 @@ namespace Bro.Justr.Umbraco.Extensions
                 }
                 else
                 {
-                    return GetLocalizedUrlFromOtherUrls(content.Id, culture);
+                    string pageUrl = CacheHelper.GetPageUrl(content.Id, culture.GetTwoLetterLangCode());
+                    if (!string.IsNullOrWhiteSpace(pageUrl))
+                    {
+                        return pageUrl;
+                    }
+                    else
+                    {
+                        return GetLocalizedUrlFromOtherUrls(content.Id, culture);
+                    }
                 }
             }
             return string.Empty;

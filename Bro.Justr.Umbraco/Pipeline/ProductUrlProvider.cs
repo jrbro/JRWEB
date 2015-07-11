@@ -9,6 +9,8 @@ using Umbraco.Web.Routing;
 using Bro.Justr.Umbraco.Extensions;
 using Umbraco.Core.Models;
 
+/* https://our.umbraco.org/documentation/Reference/Request-Pipeline/outbound-pipeline */
+
 namespace Bro.Justr.Umbraco.Pipeline
 {
     /// <summary>
@@ -35,63 +37,88 @@ namespace Bro.Justr.Umbraco.Pipeline
 
         public string GetUrl(UmbracoContext umbracoContext, int id, Uri current, UrlProviderMode mode)
         {
-            return GetUrl(umbracoContext, id, current, mode,
-                GetLanguageTwoSymbolCode(umbracoContext.PublishedContentRequest));
+            return GetUrl(umbracoContext, id, current, mode, GetLanguageTwoSymbolCode(umbracoContext.PublishedContentRequest));
         }
 
         public string GetUrl(UmbracoContext umbracoContext, int id, Uri current, UrlProviderMode mode, string languageCode)
         {
-            #warning TODO implement chaching of url if the performance is low
-
             var content = umbracoContext.ContentCache.GetById(id);
             if (content != null && content.DocumentTypeAlias == "Product" && content.Parent != null)
             {
-                /*var cachedUrls = (Dictionary<int, Dictionary<string, string>>)umbracoContext.HttpContext.Cache["CachedURLs"];
-                if (cachedUrls != null)
-                {
-                    if (cachedUrls.ContainsKey(id))
-                    {
-                        var cacheUrlItem = cachedUrls[id];
-                        //return the url for the current languahe
-                        return true;
-                    }
-                    else {
-                        //add to the cache
-                    }
-                }*/
-
-                //string languageCode = GetLanguageTwoSymbolCode(umbracoContext.PublishedContentRequest);
-
-                string rootNode = languageCode == Settings.Justr.SecondCulture.TwoLetterISOLanguageName ? "аренда-и-прокат" : "оренда-та-прокат";
-
-                string urlSegment = content.UrlName;
-                if (languageCode == Settings.Justr.SecondCulture.TwoLetterISOLanguageName)
-                {
-                    #warning TODO optimize that - use cache!
-                    var dbContent = umbracoContext.Application.Services.ContentService.GetById(id);
-                    urlSegment = dbContent.GetUrlSegment(Settings.Justr.SecondCulture) ?? content.UrlName; //be safe
-                }
-
-                string relativeUrl = "/" + string.Join("/", new string[] { languageCode, rootNode, urlSegment }) + "/";
-
                 if (mode == UrlProviderMode.Absolute)
                 {
-                    Uri absoluteUri = new Uri(relativeUrl, UriKind.Relative).MakeAbsoluteUri(umbracoContext.HttpContext);
-                    return absoluteUri.AbsoluteUri;
+                    return GetAbsoluteUrl(content, languageCode, umbracoContext);
                 }
+                else
+                {
+                    return GetRelativeUrl(content, languageCode, umbracoContext);
+                }
+            }
+            return null;
+        }
 
+        #region Private members
+
+        /// <summary>
+        /// Gets page relative URL from cache if exist, otherwise builds the URL and updates the cache
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="languageCode"></param>
+        /// <param name="umbracoContext"></param>
+        /// <returns>relative URL</returns>
+        private string GetRelativeUrl(IPublishedContent content, string languageCode, UmbracoContext umbracoContext)
+        {
+            string cachedPageUrl = CacheHelper.GetPageUrl(content.Id, languageCode);
+            if (!string.IsNullOrEmpty(cachedPageUrl))
+            {
+                return cachedPageUrl;
+            }
+            else
+            {
+                string relativeUrl = BuildRelativeUrl(content, languageCode, umbracoContext);
+                CacheHelper.SetPageUrl(content.Id, languageCode, relativeUrl);
                 return relativeUrl;
             }
-
-            return null;
-
-            /* https://our.umbraco.org/documentation/Reference/Request-Pipeline/outbound-pipeline
-             It's tricky to implement your own provider, it is advised use override the default provider. If implementing a custom Url Provider, consider following things:
-                * cache things,
-                * be sure to know how to handle schema's (http vs https) and hostnames
-                * inbound might require rewriting
-            */
         }
+
+        private string BuildRelativeUrl(IPublishedContent content, string languageCode, UmbracoContext umbracoContext)
+        {
+            string rootNode = languageCode == Settings.Justr.SecondCulture.TwoLetterISOLanguageName ? "аренда-и-прокат" : "оренда-та-прокат";
+
+            string urlSegment = content.UrlName;
+            if (languageCode == Settings.Justr.SecondCulture.TwoLetterISOLanguageName)
+            {
+                var dbContent = umbracoContext.Application.Services.ContentService.GetById(content.Id);
+                urlSegment = dbContent.GetUrlSegment(Settings.Justr.SecondCulture) ?? content.UrlName; //be safe
+            }
+
+            string relativeUrl = "/" + string.Join("/", new string[] { languageCode, rootNode, urlSegment }) + "/";
+            return relativeUrl;
+        }
+
+        /// <summary>
+        /// Gets page absolute URL from cache if exist, otherwise builds the URL and updates the cache
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="languageCode"></param>
+        /// <param name="umbracoContext"></param>
+        /// <returns>relative URL</returns>
+        private string GetAbsoluteUrl(IPublishedContent content, string languageCode, UmbracoContext umbracoContext)
+        {
+            string cachedPageUrl = CacheHelper.GetPageUrl(content.Id, languageCode, true);
+            if (!string.IsNullOrEmpty(cachedPageUrl))
+            {
+                return cachedPageUrl;
+            }
+            else
+            {
+                string relativeUrl = GetRelativeUrl(content, languageCode, umbracoContext);
+                Uri absoluteUri = new Uri(relativeUrl, UriKind.Relative).MakeAbsoluteUri(umbracoContext.HttpContext);
+                CacheHelper.SetPageUrl(content.Id, languageCode, absoluteUri.AbsoluteUri, true);
+                return absoluteUri.AbsoluteUri;
+            }
+        }
+
 
         private string GetLanguageTwoSymbolCode(PublishedContentRequest publishedContentRequest)
         {
@@ -101,6 +128,8 @@ namespace Bro.Justr.Umbraco.Pipeline
             }
             return "ua";
         }
+
+        #endregion
     }
 }
 

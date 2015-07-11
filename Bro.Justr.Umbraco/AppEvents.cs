@@ -11,6 +11,7 @@ using Bro.Justr.Umbraco.Extensions;
 using System.Globalization;
 using Umbraco.Web;
 using System;
+using System.Web;
 
 namespace Bro.Justr.Umbraco
 {
@@ -38,7 +39,7 @@ namespace Bro.Justr.Umbraco
 
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
-            ContentService.Publishing += ContentService_Publishing;
+            ContentService.Published += ContentService_Publishing;
 
             base.ApplicationStarted(umbracoApplication, applicationContext);
         }
@@ -47,6 +48,9 @@ namespace Bro.Justr.Umbraco
         {
             foreach (var content in e.PublishedEntities)
             {
+                CacheHelper.ClearPageUrlsCache(content.Id, false);
+                CacheHelper.ClearPageUrlsCache(content.Id, true);
+
                 if (content.HasProperty(Settings.Justr.PageUrlSegmentProperty) && content.HasProperty(Settings.Umbraco.UmracoUrlAliasProperty))
                 {
                     string originalAlias = (string)content.GetValue(Settings.Umbraco.UmracoUrlAliasProperty) ?? string.Empty;
