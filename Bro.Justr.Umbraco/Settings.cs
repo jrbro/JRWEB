@@ -33,7 +33,7 @@ namespace Bro.Justr.Umbraco
             /// <summary>
             /// Property alias for the Content's Url name for multilingual setup (Vorto package).
             /// </summary>
-            public static string PageUrlSegmentProperty = "vortoPageUrlSegment";
+            public static string PageUrlSegmentProperty = "pageName";//vortoPageUrlSegment
 
             /// <summary>
             /// ID of Documnent Type "Product"

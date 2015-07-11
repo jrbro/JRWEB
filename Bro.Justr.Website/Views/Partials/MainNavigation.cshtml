@@ -1,5 +1,11 @@
 @inherits Umbraco.Web.Mvc.UmbracoTemplatePage
-@{ var home = CurrentPage.Site(); }
+@using Our.Umbraco.Vorto.Extensions
+@using Bro.Justr.Umbraco.Extensions
+@using System.Globalization
+@{ 
+    var home = CurrentPage.Site();
+    CultureInfo currentCulture = new CultureInfo(this.Culture);
+}
 
 @if (home.Children.Any())
 {
@@ -10,30 +16,34 @@
     <ul class="level-@naviLevel">            
         @* For each child page under the home node *@
         @foreach (var childPage in home.Children)
-        {   
+        {
+            IPublishedContent ipChildPage = (IPublishedContent)childPage;
+            var childPageName = ipChildPage.GetVortoValue("pageName") ?? childPage.Name;
+            string childPageUrl = ipChildPage.GetUrl(currentCulture);
+            
             if (childPage.Children.Any())
             {                    
                 <li class="has-child @(childPage.IsAncestorOrSelf(CurrentPage) ? "selected" : null)">
 					@if(childPage.DocumentTypeAlias == "LandingPage") 
 					{
-                    	<span>@childPage.Name</span>
-						@childPages(childPage.Children)
+                    	<span>@childPageName</span>
+						@childPages(childPage.Children, currentCulture)
 					} else {
-						<a href="@childPage.Url">@childPage.Name</a>
+						<a href="@childPageUrl">@childPageName</a>
 					}
                 </li>
             } 
 			else
             {
                 <li class="@(childPage.IsAncestorOrSelf(CurrentPage) ? "selected" : null)">
-                    <a href="@childPage.Url">@childPage.Name</a>
+                    <a href="@childPageUrl">@childPageName</a>
                 </li>
             }            
         }
     </ul>
 }
 
-@helper childPages(dynamic pages)
+@helper childPages(dynamic pages, CultureInfo culture)
 {
     @* Ensure that we have a collection of pages *@
     if (pages.Any())
@@ -45,14 +55,18 @@
         <ul class="sublevel level-@(naviLevel)">
             @foreach (var page in pages)
             {
+                IPublishedContent ipPage = (IPublishedContent)page;
+                var pageName = ipPage.GetVortoValue("pageName") ?? page.Name;
+                string pageUrl = ipPage.GetUrl(culture);
+                
                 <li>
-                    <a href="@page.Url">@page.Name</a>
+                    <a href="@pageUrl">4 @pageName</a>
                     
                     @* if the current page has any children *@
                     @if (page.Children.Any())
                     {                        
                         @* Call our helper to display the children *@
-                        @childPages(page.Children)
+                        @childPages(page.Children, culture)
                     }
                 </li>
             }

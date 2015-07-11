@@ -8,7 +8,7 @@
 @using System.Globalization
 
 @{
-    var currentCategoryName = ((IPublishedContent)CurrentPage).GetVortoValue("productCategoryName");
+    var currentCategoryName = ((IPublishedContent)CurrentPage).GetVortoValue("pageName");
     if (currentCategoryName == null)
     {
         currentCategoryName = CurrentPage.Name;
@@ -29,7 +29,7 @@
 				@foreach(var category in CurrentPage.Children) 
 				{
 					IPublishedContent ipcCategory = (IPublishedContent) category;
-					var categoryName = ipcCategory.GetVortoValue("productCategoryName");
+					var categoryName = ipcCategory.GetVortoValue("pageName");
 
                     string categoryPageUrl = ipcCategory.GetUrl(currentCulture);
 					

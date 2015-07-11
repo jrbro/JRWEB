@@ -1,18 +1,25 @@
 @inherits Umbraco.Web.Mvc.UmbracoTemplatePage
-@{ 
+@using Our.Umbraco.Vorto.Extensions
+@using Bro.Justr.Umbraco.Extensions
+@using System.Globalization
+@{
     var home = CurrentPage.Site();
+    CultureInfo currentCulture = new CultureInfo(this.Culture);
 }
 
 @if (home.Children.Where("Visible").Any())
 {
     @* For each child page under the home node, where the property umbracoNaviHide is not True *@
     foreach (var childPage in home.Children.Where("Visible"))
-    {   
+    {
+        IPublishedContent ipChildPage = (IPublishedContent)childPage;
+        var childPageName = ipChildPage.GetVortoValue("pageName") ?? childPage.Name;
+        
         <div class="col-xs-6 col-sm-3">
             @if (childPage.Children.Where("Visible").Any())
             {                    
-                <strong>@childPage.Name</strong>
-                @childPages(childPage.Children)
+                <strong>@childPageName</strong>
+                @childPages(childPage.Children, currentCulture)
             }
         </div>
     }
@@ -33,7 +40,7 @@
     </ul>
 </div>
 
-@helper childPages(dynamic pages)
+@helper childPages(dynamic pages, CultureInfo culture)
 {
     @* Ensure that we have a collection of pages *@
     if (pages.Any())
@@ -41,8 +48,11 @@
         <ul>
             @foreach (var page in pages.Where("Visible"))
             {
+                IPublishedContent ipPage = (IPublishedContent)page;
+                var pageName = ipPage.GetVortoValue("pageName") ?? page.Name;
+                string pageUrl = ipPage.GetUrl(culture); 
                 <li>
-                    <a href="@page.Url">@page.Name</a>
+                    <a href="@pageUrl">@pageName</a>
                 </li>
             }
         </ul>
