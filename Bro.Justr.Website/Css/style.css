@@ -1,6 +1,13 @@
 /* Go crazy with your own styles here */
 /* EDITOR PROPERTIES - PLEASE DON'T DELETE THIS LINE TO AVOID DUPLICATE PROPERTIES */
 
+/* BASIC */
+
+body {
+    /*background-color: #f5f5f5;*/
+}
+
+
 /* NAVIGATION */
 
 a.mainNavLink {color:white;}
@@ -8,4 +15,53 @@ a.mainNavLink {color:white;}
 ul.breadcrumbs li {
     display:inline;
     list-style:none;
+}
+
+/* PRODUCT CATEGORIES */
+
+.subcategoriesPanel
+{
+    float:left;
+    width:15%;
+}
+
+ul.subcategoriesList li
+{
+    list-style:square;
+}
+
+
+.productsPanel
+{
+    margin-left:15%;
+}
+
+.productListItem
+{
+    border:1px dashed gray;
+    margin:10px;
+    padding:10px;
+}
+
+.productListItemLeft
+{
+    float:left;
+    width:20%;
+}
+
+.productListItemCenter
+{
+    display:inline-block;
+    width:60%;
+}
+
+.productListItemRight
+{
+    float:right;
+    width:20%;
+}
+
+img.productThumbnail
+{
+    height:80px;
 }

@@ -27,7 +27,7 @@
 					@if(childPage.DocumentTypeAlias == "LandingPage") 
 					{
                     	<span>@childPageName</span>
-						@childPages(childPage.Children, currentCulture)
+						/*@childPages(childPage.Children, currentCulture)*/
 					} else {
 						<a href="@childPageUrl">@childPageName</a>
 					}
@@ -60,7 +60,7 @@
                 string pageUrl = ipPage.GetUrl(culture);
                 
                 <li>
-                    <a href="@pageUrl">4 @pageName</a>
+                    <a href="@pageUrl">@pageName</a>
                     
                     @* if the current page has any children *@
                     @if (page.Children.Any())

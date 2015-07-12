@@ -1,0 +1,45 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    Layout = "Master.cshtml";
+}
+
+@using Our.Umbraco.Vorto.Extensions
+@using Bro.Justr.Umbraco.Extensions
+@using System.Globalization
+
+@{
+    var currentCategoryName = ((IPublishedContent)CurrentPage).GetPageName();
+    CultureInfo currentCulture = new CultureInfo(this.Culture);
+}
+
+<div role="content">
+	<section class="light blogarchive equalizer">
+		<div class="container">
+			<div class="row">
+
+                @currentCategoryName
+
+                <br />
+
+				@foreach(var category in CurrentPage.Children) 
+				{
+					IPublishedContent ipcCategory = (IPublishedContent) category;
+					var categoryName = ipcCategory.GetPageName();
+                    string categoryPageUrl = ipcCategory.GetUrl(currentCulture);
+					
+					<div class="col-sm-6">
+						<div class="content equal">
+							<a href="@categoryPageUrl">@categoryName</a>
+							<br/>	
+					
+							@if(@category.HasValue("productCategoryLogo"))
+							{
+								<img src='@Umbraco.Media(@category.productCategoryLogo).Url' alt='@categoryName' />
+							}
+							<br/>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</section>

@@ -8,44 +8,49 @@
 @using System.Globalization
 
 @{
-    var currentCategoryName = ((IPublishedContent)CurrentPage).GetVortoValue("pageName");
-    if (currentCategoryName == null)
-    {
-        currentCategoryName = CurrentPage.Name;
-    }
-
     CultureInfo currentCulture = new CultureInfo(this.Culture);
+    var currentCategoryName = ((IPublishedContent)CurrentPage).GetPageName();
+    var children = ((IPublishedContent)CurrentPage).Children();
+    var categories = children.Where(i => i.DocumentTypeAlias == "ProductCategory");
+    var products = children.Where(i => i.DocumentTypeAlias == "Product");
 }
 
-<div role="content">
-	<section class="light blogarchive equalizer">
-		<div class="container">
-			<div class="row">
+<div class="subcategoriesPanel">
+    <ul class="subcategoriesList">
+        @foreach (var ipCategory in categories)
+        {
+            var categoryName = ipCategory.GetPageName();
+            string categoryPageUrl = ipCategory.GetUrl(currentCulture);
 
-                @currentCategoryName
+            <li><a href="@categoryPageUrl">@categoryName</a></li>
+        }
+    </ul>
+</div>
 
-                <br />
+<div role="content" class="productsPanel">
+    <h2>@currentCategoryName</h2>
+    <div class="productList">
+        @foreach (var ipProduct in products)
+        {
+            var productName = ipProduct.GetPageName();
+            string productPageUrl = ipProduct.GetUrl(currentCulture);
+            var description = ipProduct.GetVortoValue("productDescription");
 
-				@foreach(var category in CurrentPage.Children) 
-				{
-					IPublishedContent ipcCategory = (IPublishedContent) category;
-					var categoryName = ipcCategory.GetVortoValue("pageName");
-
-                    string categoryPageUrl = ipcCategory.GetUrl(currentCulture);
-					
-					<div class="col-sm-6">
-						<div class="content equal">
-							<a href="@categoryPageUrl">@categoryName</a>
-							<br/>	
-					
-							@if(@category.HasValue("productCategoryLogo"))
-							{
-								<img src='@Umbraco.Media(@category.productCategoryLogo).Url' alt='@categoryName' />
-							}
-							<br/>
-						</div>
-					</div>
-				}
-			</div>
-		</div>
-	</section>
+            <div class="productListItem">
+                <div class="productListItemLeft">
+                    &nbsp;
+                    @if (ipProduct.HasValue("productImage"))
+                    {
+                        <img src='@ipProduct.GetCropUrl("productImage", "200x200")' class="productThumbnail" />
+		            }
+                </div>
+                <div class="productListItemCenter">
+                    <a href="@productPageUrl">@productName</a>
+                    <div>@Umbraco.GetDictionaryValue("LocationCity"): @ipProduct.GetPropertyValue("productLocationCity")</div>
+                    <div>@Html.Raw(@description)</div>
+                </div>
+                <div class="productListItemRight"><div>price</div></div>
+            </div>
+        }
+    </div>
+</div>
