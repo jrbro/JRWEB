@@ -9,6 +9,7 @@
 *.so
 
 !NuGet.exe
+!SharedLibraries/*.dll
 
 # Packages #
 ############

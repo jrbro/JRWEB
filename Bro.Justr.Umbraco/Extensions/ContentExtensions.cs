@@ -8,6 +8,7 @@ using Umbraco.Core.Models;
 using Umbraco.Core.Strings;
 using Umbraco.Web;
 using Umbraco.Web.Routing;
+using Our.Umbraco.Vorto.Extensions;
 
 namespace Bro.Justr.Umbraco.Extensions
 {
@@ -67,6 +68,16 @@ namespace Bro.Justr.Umbraco.Extensions
                 }
             }
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Get localized page name (if exists), otherwise reqular name
+        /// </summary>
+        /// <param name="content">content</param>
+        /// <returns>page name</returns>
+        public static object GetPageName(this IPublishedContent content)
+        {
+            return content.GetVortoValue("pageName") ?? content.Name;
         }
 
         private static string GetLocalizedUrlFromOtherUrls(int contentId, CultureInfo culture)

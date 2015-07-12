@@ -392,6 +392,7 @@
     <Content Include="Views\Product.cshtml" />
     <Content Include="Views\ProductCategory.cshtml" />
     <Content Include="Views\TextPage.cshtml" />
+    <Content Include="Views\MacroPartials\Breadcrumbs.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2900,7 +2901,6 @@
     <Folder Include="App_Code\" />
     <Folder Include="masterpages\" />
     <Folder Include="usercontrols\" />
-    <Folder Include="Views\MacroPartials\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
